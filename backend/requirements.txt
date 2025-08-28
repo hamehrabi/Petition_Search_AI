@@ -1,0 +1,41 @@
+# Core Dependencies for Petition Search API
+# These are all the Python packages we need to run our application
+
+# FastAPI - Modern web framework for building APIs
+fastapi
+
+# Uvicorn - ASGI server to run our FastAPI app
+uvicorn[standard]
+
+# Pydantic - Data validation using Python type hints
+pydantic
+
+# Sentence Transformers - For semantic search using AI
+sentence-transformers
+
+# PyTorch - Required by sentence-transformers (CPU version to keep it lightweight)
+torch
+
+# Scikit-learn - For cosine similarity calculations
+scikit-learn
+
+# NumPy - Numerical computing (required by sklearn and torch)
+numpy
+
+# Python-dotenv - Load environment variables from .env file
+python-dotenv
+
+# Python-multipart - For handling form data
+python-multipart
+
+# Additional useful packages for production readiness
+
+# CORS support (already included in FastAPI but good to be explicit)
+# fastapi already includes this
+
+# For better logging
+colorama  # Colored terminal output on Windows
+
+# Optional: For testing (uncomment if needed)
+# pytest
+# httpx  # For testing API endpoints

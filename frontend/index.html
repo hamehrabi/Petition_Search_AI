@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Petition Search</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Add a nice font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1 class="title">🔍 AI Petition Search</h1>
+            <p class="subtitle">Find UK Parliament petitions using natural language</p>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Try: 'Find petitions about education' or 'Environmental protection campaigns'"
+                    maxlength="500"
+                >
+                <button id="searchButton" class="search-button">Search</button>
+            </div>
+            
+            <!-- Example Queries -->
+            <div class="example-queries">
+                <span class="example-label">Try these:</span>
+                <button class="example-btn" data-query="petitions about climate change">Climate Change</button>
+                <button class="example-btn" data-query="improve healthcare and NHS">Healthcare & NHS</button>
+                <button class="example-btn" data-query="education and schools">Education</button>
+                <button class="example-btn" data-query="environmental protection">Environment</button>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="stateFilter">Status:</label>
+                    <select id="stateFilter" class="filter-select">
+                        <option value="">All</option>
+                        <option value="open">Open</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="minSignatures">Min Signatures:</label>
+                    <input 
+                        type="number" 
+                        id="minSignatures" 
+                        class="filter-input" 
+                        placeholder="e.g. 1000"
+                        min="0"
+                    >
+                </div>
+                <div class="filter-group">
+                    <label for="resultLimit">Results:</label>
+                    <select id="resultLimit" class="filter-select">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Indicator -->
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Searching petitions using AI...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <!-- Statistics Section -->
+        <section id="statsSection" class="stats-section hidden">
+            <h3>Dataset Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalPetitions">-</div>
+                    <div class="stat-label">Total Petitions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="openPetitions">-</div>
+                    <div class="stat-label">Open Petitions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgSignatures">-</div>
+                    <div class="stat-label">Avg. Signatures</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSignatures">-</div>
+                    <div class="stat-label">Total Signatures</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="resultsSection" class="results-section hidden">
+            <div class="results-header">
+                <h2 id="resultsTitle">Search Results</h2>
+                <p id="resultsCount" class="results-count"></p>
+            </div>
+            <div id="resultsContainer" class="results-container">
+                <!-- Results will be inserted here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Info Section -->
+        <section class="info-section">
+            <h3>About This Search</h3>
+            <p>
+                This AI-powered search uses <strong>semantic understanding</strong> to find relevant petitions. 
+                Unlike traditional keyword search, it understands the meaning behind your query. 
+                For example, searching for "environmental protection" will also find petitions about 
+                climate change, renewable energy, and conservation.
+            </p>
+            <div class="tech-info">
+                <span class="tech-badge">Sentence Transformers</span>
+                <span class="tech-badge">Cosine Similarity</span>
+                <span class="tech-badge">FastAPI</span>
+                <span class="tech-badge">Natural Language Processing</span>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built for Tech Test | Using AI for Better Search | 
+                <a href="http://localhost:8000/docs" target="_blank">API Documentation</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
