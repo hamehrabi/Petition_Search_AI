@@ -11,11 +11,11 @@ A natural language search interface for UK Parliament petitions using semantic s
 This project enables users to search UK Parliament petitions using natural language queries like "Find me all petitions about education" or "Show me campaigns calling for environmental protection". Unlike traditional keyword search, this system understands the **meaning** behind queries using AI-powered semantic search.
 
 <p align="center">
-  <img width="591" height="1690" alt="image" src="https://github.com/user-attachments/assets/71fa3339-d587-4216-b6d6-929dbf4daf4d" />
+  <img width="1370" alt="image" src="https://github.com/user-attachments/assets/89126202-fc81-4e9d-b02a-df85f4151e96" />
 </p>
 
 <p align="center">
-  <img width="591" alt="image" src="https://github.com/user-attachments/assets/f4172c20-ead5-4eea-8b57-98353ae230be" />
+  <img width="1370" alt="image" src="https://github.com/user-attachments/assets/f4172c20-ead5-4eea-8b57-98353ae230be" />
 </p>
 
 
