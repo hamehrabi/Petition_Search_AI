@@ -1,10 +1,12 @@
-# 🔍 AI-Powered Petition Search System
+# **🔍 AI-Powered Petition Search System - Part 1: Semantic Search + FastAPI**
 
 A natural language search interface for UK Parliament petitions using semantic search and AI embeddings.
 
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-green.svg)
 ![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+In order to see Part 2 of this series, ***AI-Powered Petition Search System using Low-code + Agentic AI**, please visit this repo: [Petition Search AI Part 2](https://github.com/hamehrabi/Petition_Search_AI_Part2)
 
 ## 📋 Overview
 
