@@ -14,9 +14,10 @@ This project enables users to search UK Parliament petitions using natural langu
 - 🤖 **Semantic Search**: Uses Sentence Transformers to understand query meaning
 - 🎯 **High Relevance**: Returns results based on semantic similarity, not just keywords
 - 🚀 **Fast Performance**: Embeddings are cached for quick responses
+- 📊 **Search Analytics**: Visual charts showing query coverage and petition statistics
 - 🔧 **RESTful API**: Clean API design with automatic documentation
-- 💻 **Responsive UI**: Works on desktop and mobile devices
-- 🔒 **Security Aware**: Input validation, CORS handling, rate limiting headers
+- 💻 **Responsive UI**: Works on desktop and mobile devices with interactive charts
+- 🔒 **Security Aware**: Input validation, CORS handling, XSS prevention
 
 ## 🏗️ Architecture
 
@@ -47,11 +48,19 @@ This project enables users to search UK Parliament petitions using natural langu
 - **PyTorch**: Deep learning framework (CPU version)
 - **Scikit-learn**: For cosine similarity calculations
 - **Pydantic**: Data validation and settings management
+- **Uvicorn**: ASGI server for running the API
 
 ### Frontend
 - **Vanilla JavaScript**: No framework dependencies for simplicity
+- **Chart.js**: Interactive charts for search analytics visualization
 - **Modern CSS**: Clean, responsive design with CSS Grid and Flexbox
 - **HTML5**: Semantic markup for accessibility
+- **Google Fonts (Inter)**: Modern typography
+
+### Data Storage
+- **CSV file**: Petition data (~800KB)
+- **Pickle cache**: Pre-computed embeddings (~10MB)
+- **Local filesystem**: Simple storage for development
 
 ### AI Model
 - **paraphrase-multilingual-MiniLM-L12-v2**: Lightweight but powerful model
@@ -67,6 +76,26 @@ This project enables users to search UK Parliament petitions using natural langu
 - pip (Python package manager)
 - 2GB free disk space (for model and dependencies)
 
+### Project Structure
+```
+petition-search/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── main.py          # FastAPI application and routes
+│   │   ├── models.py        # Pydantic data models
+│   │   ├── search_engine.py # AI search logic
+│   │   └── config.py        # Configuration settings
+│   ├── data/
+│   │   ├── petitions.csv       # Petition data (~800KB)
+│   │   └── embeddings_cache.pkl # Cached AI embeddings (~10MB)
+│   └── requirements.txt     # Python dependencies
+└── frontend/
+    ├── index.html          # Main HTML page
+    ├── script.js           # JavaScript functionality
+    └── style.css           # CSS styling
+```
+
 ### Step 1: Clone or Download the Project
 ```bash
 cd petition-search
@@ -78,7 +107,13 @@ cd backend
 pip install -r requirements.txt
 ```
 
-This will install all necessary packages including FastAPI and Sentence Transformers.
+This will install all necessary packages including:
+- FastAPI for the web framework
+- Sentence Transformers for AI-powered search
+- Scikit-learn for similarity calculations
+- Uvicorn for running the server
+- And other dependencies
+
 First run will download the AI model (~120MB).
 
 ## Step 3: Run the Backend & Frontend Server
@@ -110,18 +145,28 @@ conda deactivate
 ### Web Interface
 1. Open the frontend in your browser
 2. Enter a natural language query (e.g., "environmental protection")
-3. Optionally set filters (state, minimum signatures)
+3. Optionally set filters (state, minimum signatures, result limit)
 4. Click Search or press Enter
-5. View results ranked by relevance with similarity scores
+5. View results ranked by relevance
+6. Explore interactive analytics charts showing:
+   - Query coverage (related vs unrelated petitions)
+   - Top petitions by signatures
+   - Status distribution (open/closed/rejected)
 
 ### API Documentation
 Visit http://localhost:8000/docs for interactive API documentation (Swagger UI)
 
 ### Example API Request
 ```bash
+# Basic search
 curl -X POST "http://localhost:8000/api/search" \
   -H "Content-Type: application/json" \
   -d '{"query": "climate change", "limit": 5}'
+
+# Search with analytics
+curl -X POST "http://localhost:8000/api/search/analytics" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "climate change", "limit": 10}'
 ```
 
 ## 💡 How It Works
@@ -266,10 +311,34 @@ If given more time, here's what I would add:
 |----------|--------|-------------|
 | `/` | GET | Welcome message |
 | `/api/search` | POST | Main search endpoint |
-| `/api/petitions` | GET | List all petitions with pagination |
+| `/api/search/analytics` | POST | Advanced search analytics with charts data |
 | `/api/stats` | GET | Dataset statistics |
 | `/api/health` | GET | Health check |
 | `/docs` | GET | Interactive API documentation |
+
+### Search Request Body
+```json
+{
+  "query": "climate change",
+  "limit": 10
+}
+```
+
+### Search Response
+```json
+{
+  "query": "climate change",
+  "results": [
+    {
+      "title": "Petition title",
+      "url": "https://petition.parliament.uk/...",
+      "state": "open",
+      "signatures": 12345
+    }
+  ],
+  "count": 5
+}
+```
 
 ## 🤝 Contributing
 
@@ -293,7 +362,3 @@ MIT License - Feel free to use this code for learning purposes.
 - The open-source community for inspiration
 
 ---
-
-**Built with ❤️ by a Junior Developer demonstrating practical AI implementation for better search experiences.**
-
-*Time spent: ~3.5 hours (within the 3-4 hour limit)*

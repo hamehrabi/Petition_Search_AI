@@ -189,6 +189,10 @@ async function performSearch() {
         // Display results
         displayResults(data);
         
+        // Load analytics for this search
+        console.log('About to load analytics for:', requestBody);
+        loadSearchAnalytics(requestBody);
+        
     } catch (error) {
         console.error('Search error:', error);
         hideLoading();
@@ -345,6 +349,259 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
+}
+
+/**
+ * Load and display search analytics
+ */
+async function loadSearchAnalytics(requestBody) {
+    try {
+        console.log('Loading analytics for search:', requestBody.query);
+        console.log('Request body:', requestBody);
+        
+        const response = await fetch(`${API_BASE_URL}/api/search/analytics`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody)
+        });
+        
+        console.log('Analytics response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Analytics response error:', errorText);
+            throw new Error(`Failed to load analytics: ${response.status}`);
+        }
+        
+        const analytics = await response.json();
+        console.log('Analytics data received:', analytics);
+        displayAnalytics(analytics, requestBody.query);
+        
+    } catch (error) {
+        console.error('Analytics error:', error);
+        console.error('Error details:', error.message);
+        // Show error in console but don't hide section completely
+        const analyticsSection = document.getElementById('analyticsSection');
+        if (analyticsSection) {
+            analyticsSection.classList.add('hidden');
+        }
+    }
+}
+
+/**
+ * Display analytics with charts
+ */
+function displayAnalytics(analytics, query) {
+    console.log('Displaying analytics:', analytics);
+    const analyticsSection = document.getElementById('analyticsSection');
+    const analyticsSummary = document.getElementById('analyticsSummary');
+    
+    if (!analyticsSection) {
+        console.error('Analytics section not found in DOM');
+        return;
+    }
+    
+    if (!analyticsSummary) {
+        console.error('Analytics summary element not found in DOM');
+        return;
+    }
+    
+    // Update summary text
+    analyticsSummary.innerHTML = `
+        Found <strong>${analytics.related_petitions}</strong> petitions related to "${query}" 
+        out of <strong>${analytics.total_petitions}</strong> total petitions 
+        (<strong>${analytics.percentage_related}%</strong> coverage with similarity threshold ${analytics.similarity_threshold})
+    `;
+    
+    console.log('Updated summary text');
+    
+    // Create charts
+    try {
+        console.log('Creating coverage chart...');
+        createCoverageChart(analytics);
+        console.log('Creating signatures chart...');
+        createSignaturesChart(analytics);
+        console.log('Creating status chart...');
+        createStatusChart(analytics);
+        console.log('All charts created');
+    } catch (error) {
+        console.error('Error creating charts:', error);
+    }
+    
+    // Show analytics section
+    analyticsSection.classList.remove('hidden');
+    console.log('Analytics section should now be visible');
+}
+
+// Chart instances to destroy when creating new ones
+let coverageChartInstance = null;
+let signaturesChartInstance = null;
+let statusChartInstance = null;
+
+/**
+ * Create query coverage pie chart
+ */
+function createCoverageChart(analytics) {
+    const ctx = document.getElementById('coverageChart').getContext('2d');
+    
+    // Destroy existing chart
+    if (coverageChartInstance) {
+        coverageChartInstance.destroy();
+    }
+    
+    coverageChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Related Petitions', 'Other Petitions'],
+            datasets: [{
+                data: [analytics.pie_chart_data.related, analytics.pie_chart_data.unrelated],
+                backgroundColor: ['#2563eb', '#e5e7eb'],
+                borderColor: ['#1d4ed8', '#d1d5db'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = analytics.total_petitions;
+                            const value = context.raw;
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${context.label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Create top petitions bar chart
+ */
+function createSignaturesChart(analytics) {
+    const ctx = document.getElementById('signaturesChart').getContext('2d');
+    
+    // Destroy existing chart
+    if (signaturesChartInstance) {
+        signaturesChartInstance.destroy();
+    }
+    
+    if (analytics.top_10_signatures.length === 0) {
+        ctx.canvas.parentNode.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 50px;">No matching petitions found</p>';
+        return;
+    }
+    
+    signaturesChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: analytics.top_10_signatures.map(p => p.title),
+            datasets: [{
+                label: 'Signatures',
+                data: analytics.top_10_signatures.map(p => p.signatures),
+                backgroundColor: '#2563eb',
+                borderColor: '#1d4ed8',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `Signatures: ${context.raw.toLocaleString()}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        },
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 35,
+                        minRotation: 35,
+                        font: {
+                            size: 10
+                        },
+                        maxTicksLimit: 10
+                    }
+                }
+            }
+        }
+    });
+}
+
+/**
+ * Create status distribution pie chart
+ */
+function createStatusChart(analytics) {
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    
+    // Destroy existing chart
+    if (statusChartInstance) {
+        statusChartInstance.destroy();
+    }
+    
+    statusChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Open Petitions', 'Closed Petitions', 'Rejected Petitions'],
+            datasets: [{
+                data: [analytics.status_breakdown.open, analytics.status_breakdown.closed, analytics.status_breakdown.rejected],
+                backgroundColor: ['#2563eb', '#6b7280', '#e5e7eb'],
+                borderColor: ['#1d4ed8', '#4b5563', '#d1d5db'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = analytics.status_breakdown.open + analytics.status_breakdown.closed + analytics.status_breakdown.rejected;
+                            const value = context.raw;
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return `${context.label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 
 // Log when the script is loaded successfully

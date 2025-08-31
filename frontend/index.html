@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Add a nice font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for analytics charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -98,6 +100,43 @@
                 <div class="stat-card">
                     <div class="stat-value" id="totalSignatures">-</div>
                     <div class="stat-label">Total Signatures</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Analytics Section -->
+        <section id="analyticsSection" class="analytics-section hidden">
+            <h2>Search Query Analytics</h2>
+            <div class="analytics-summary">
+                <p id="analyticsSummary">Perform a search to see analytics...</p>
+            </div>
+            
+            <div class="charts-container">
+                <!-- Top Petitions Bar Chart - First Row -->
+                <div class="chart-item chart-full-width">
+                    <h3>Top 10 Petitions by Signatures</h3>
+                    <div class="chart-wrapper">
+                        <canvas id="signaturesChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Second Row: Two Pie Charts Side by Side -->
+                <div class="pie-charts-row">
+                    <!-- Query Coverage Pie Chart -->
+                    <div class="chart-item chart-half-width">
+                        <h3>Query Coverage</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="coverageChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Status Distribution Pie Chart -->
+                    <div class="chart-item chart-half-width">
+                        <h3>Open vs Closed Petitions</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="statusChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

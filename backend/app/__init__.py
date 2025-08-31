@@ -1,8 +1,3 @@
-"""
-Petition Search API Package
+# this is just to make the app folder work as a package
 
-This package contains the AI-powered petition search system.
-"""
-
-__version__ = "1.0.0"
-__author__ = "Junior Developer"
+# maybe I'll add more stuff here later
