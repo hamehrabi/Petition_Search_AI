@@ -14,7 +14,9 @@ This project enables users to search UK Parliament petitions using natural langu
   <img width="591" height="1690" alt="image" src="https://github.com/user-attachments/assets/71fa3339-d587-4216-b6d6-929dbf4daf4d" />
 </p>
 
-<img width="1371" height="729" alt="image" src="https://github.com/user-attachments/assets/f4172c20-ead5-4eea-8b57-98353ae230be" />
+<p align="center">
+  <img width="591" alt="image" src="https://github.com/user-attachments/assets/f4172c20-ead5-4eea-8b57-98353ae230be" />
+</p>
 
 
 
